@@ -1,6 +1,6 @@
-# Workflow Editor
+# Journey
 
-A modern, production-ready workflow editor for designing and executing sequential workflows. Built with React, TypeScript, and TailwindCSS.
+A lightweight workflow editor for designing and executing sequential workflows. Built with React, TypeScript, and TailwindCSS.
 
 ## Features
 
