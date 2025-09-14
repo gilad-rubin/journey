@@ -9,10 +9,60 @@ function blockLabel(block, index) {
   const base = block.type;
   if (block.type === "PRESENT_CONTENT") return "PRESENT_CONTENT";
   if (block.type === "AWAIT_USER_INPUT") return "AWAIT_USER_INPUT";
-  if (block.type === "SET_VARIABLE") return "SET_VARIABLE";
+  if (block.type === "SET_VARIABLE") {
+    // Show variable assignment details
+    let label = "SET VARIABLE";
+    
+    // Check for optional description first
+    if (block.description) {
+      label = block.description;
+    } else if (block.target) {
+      // Show what variable is being set
+      label = `Set: ${block.target}`;
+      
+      // Show the source/action
+      if (block.action) {
+        // Show action name (cleaner than full action string)
+        const actionName = block.action.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        label += `<br/>via ${actionName}`;
+      } else if (block.source) {
+        // Show source (fallback for legacy format)
+        let source = block.source;
+        if (source.startsWith('tool:')) {
+          source = source.substring(5).replace(/_/g, ' ');
+          source = source.replace(/\b\w/g, l => l.toUpperCase());
+        }
+        label += `<br/>from ${source}`;
+      }
+    }
+    
+    return label;
+  }
   if (block.type === "UPDATE_VARIABLE") return "UPDATE_VARIABLE";
   if (block.type === "GOTO_NODE") return "GOTO_NODE";
-  if (block.type === "CONDITION") return "CONDITION";
+  if (block.type === "CONDITION") {
+    // Extract condition details for display
+    if (Array.isArray(block.rules) && block.rules.length > 0) {
+      const rule = block.rules[0]; // Show first rule for simplicity
+      if (rule.variable && rule.operator) {
+        const operator = rule.operator.replace(/_/g, ' ');
+        
+        // Handle boolean operators that don't need a value
+        if (rule.operator === 'is_true' || rule.operator === 'is_false') {
+          return `${rule.variable}<br/>${operator}`;
+        }
+        
+        // Handle operators with values
+        if (rule.value !== undefined && rule.value !== '') {
+          return `${rule.variable}<br/>${operator}<br/>${rule.value}`;
+        }
+        
+        // Fallback for operators without values
+        return `${rule.variable}<br/>${operator}`;
+      }
+    }
+    return "CONDITION";
+  }
   if (block.type === "END_WORKFLOW") return "END";
   return `${base}_${index + 1}`;
 }

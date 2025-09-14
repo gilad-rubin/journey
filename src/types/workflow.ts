@@ -38,6 +38,8 @@ export interface WorkflowBlock {
   // New fields for actions
   action?: string; // Action ID
   actionArgs?: Record<string, any>; // Action arguments
+  // Optional description for better mermaid visualization
+  description?: string; // Custom description for the block
 }
 
 export interface ConditionRule {

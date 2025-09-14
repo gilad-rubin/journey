@@ -185,6 +185,98 @@ def create_personalized_affirmation(intention: str, name: str = "") -> str:
         return f"May {name_part}find what you're seeking in this practice."
 
 
+def check_time_availability(available_time: str) -> str:
+    """
+    Categorize available time into short, medium, or long sessions.
+    
+    Args:
+        available_time: Time in minutes as string
+        
+    Returns:
+        Category: 'short' (5-10 min), 'medium' (10-20 min), 'long' (20+ min)
+    """
+    try:
+        time_int = int(str(available_time).strip())
+        if time_int <= 10:
+            return 'short'
+        elif time_int <= 20:
+            return 'medium'
+        else:
+            return 'long'
+    except Exception:
+        return 'short'
+
+
+def determine_meditation_path(stress_level: str, available_time: str) -> str:
+    """
+    Determine the meditation path based on stress level and time.
+    
+    Args:
+        stress_level: 'low', 'moderate', 'high'
+        available_time: Time in minutes as string
+        
+    Returns:
+        Path: 'quick_calm', 'gentle_journey', 'deep_restoration', 'peaceful_exploration'
+    """
+    time_category = check_time_availability(available_time)
+    
+    if stress_level == 'high':
+        if time_category == 'short':
+            return 'quick_calm'
+        else:
+            return 'deep_restoration'
+    elif stress_level == 'moderate':
+        if time_category in ['short', 'medium']:
+            return 'gentle_journey'
+        else:
+            return 'peaceful_exploration'
+    else:  # low stress
+        if time_category == 'short':
+            return 'gentle_journey'
+        else:
+            return 'peaceful_exploration'
+
+
+def get_story_introduction(meditation_path: str) -> str:
+    """
+    Get a story-like introduction based on the meditation path.
+    
+    Args:
+        meditation_path: The determined meditation path
+        
+    Returns:
+        A story introduction string
+    """
+    introductions = {
+        'quick_calm': "Imagine you're stepping into a quiet garden sanctuary where stress melts away with each breath...",
+        'gentle_journey': "Picture yourself on a peaceful mountain path, where each step brings more clarity and calm...",
+        'deep_restoration': "Envision yourself in a healing forest grove, where ancient trees share their wisdom and tranquility...",
+        'peaceful_exploration': "See yourself floating on a serene lake at sunset, with infinite peace surrounding you..."
+    }
+    
+    return introductions.get(meditation_path, introductions['gentle_journey'])
+
+
+def get_final_wisdom(meditation_path: str) -> str:
+    """
+    Get closing wisdom based on the meditation path taken.
+    
+    Args:
+        meditation_path: The meditation path that was followed
+        
+    Returns:
+        Closing wisdom string
+    """
+    wisdom = {
+        'quick_calm': "Like a flower that blooms in moments, you've found peace in this brief sanctuary. Carry this calm with you.",
+        'gentle_journey': "Your inner mountain remains steady and strong. You can return to this peaceful path whenever you need.",
+        'deep_restoration': "The healing energy of the forest flows within you now. Trust in your body's natural wisdom to restore itself.",
+        'peaceful_exploration': "The vast peace of the lake lives within your heart. You are both the stillness and the infinite sky above."
+    }
+    
+    return wisdom.get(meditation_path, wisdom['gentle_journey'])
+
+
 def register_meditation_tools(registry: ToolRegistry) -> None:
     """Register all meditation-related tools with the registry."""
     
@@ -226,4 +318,36 @@ def register_meditation_tools(registry: ToolRegistry) -> None:
         description="Create a personalized affirmation based on intention",
         category="meditation",
         examples=["create_personalized_affirmation('peace', 'Sarah')", "create_personalized_affirmation('strength')"]
+    )
+    
+    registry.register(
+        "check_time_availability",
+        check_time_availability,
+        description="Categorize available time into short, medium, or long sessions",
+        category="meditation",
+        examples=["check_time_availability('15')", "check_time_availability('5')"]
+    )
+    
+    registry.register(
+        "determine_meditation_path",
+        determine_meditation_path,
+        description="Determine the meditation path based on stress level and available time",
+        category="meditation",
+        examples=["determine_meditation_path('high', '10')", "determine_meditation_path('low', '25')"]
+    )
+    
+    registry.register(
+        "get_story_introduction",
+        get_story_introduction,
+        description="Get a story-like introduction based on the meditation path",
+        category="meditation",
+        examples=["get_story_introduction('quick_calm')", "get_story_introduction('peaceful_exploration')"]
+    )
+    
+    registry.register(
+        "get_final_wisdom",
+        get_final_wisdom,
+        description="Get closing wisdom based on the meditation path taken",
+        category="meditation",
+        examples=["get_final_wisdom('deep_restoration')", "get_final_wisdom('gentle_journey')"]
     )

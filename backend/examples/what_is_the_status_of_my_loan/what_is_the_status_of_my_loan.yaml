@@ -48,6 +48,7 @@ nodes:
     target: Has Active Loans?
     source: tool:has_active_loans
     action: has_active_loans
+    description: "Check Active Loans"
     actionArgs:
       user_id: '11111'
   - type: CONDITION
@@ -63,6 +64,7 @@ nodes:
     target: Loan Balance
     source: tool:get_total_loan_balance
     action: get_total_loan_balance
+    description: "Get Total Balance"
     actionArgs:
       user_id: '11111'
   - type: CONDITION
