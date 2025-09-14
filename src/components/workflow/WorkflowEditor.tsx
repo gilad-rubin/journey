@@ -10,21 +10,20 @@ import { UseWorkflowReturn } from "@/hooks/useWorkflow";
 import { cn } from "@/lib/utils";
 import { WorkflowNode as WorkflowNodeType } from "@/types/workflow";
 import {
-    createSampleWorkflow,
-    exportWorkflowToYaml,
-    parseYamlWorkflow,
+  exportWorkflowToYaml,
+  parseYamlWorkflow,
 } from "@/utils/yaml";
 import {
-    Download,
-    Edit3,
-    FileText,
-    Play,
-    Plus,
-    Save,
-    Settings,
-    Upload,
-    Workflow,
-    X
+  Download,
+  Edit3,
+  FileText,
+  Play,
+  Plus,
+  Save,
+  Settings,
+  Upload,
+  Workflow,
+  X
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { WorkflowExecutor } from "./WorkflowExecutor";
@@ -116,9 +115,15 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({ workflowHook }) 
     reader.readAsText(file);
   };
 
-  const handleCreateSample = () => {
-    const sampleWorkflow = createSampleWorkflow();
-    actions.setWorkflow(sampleWorkflow);
+  const handleCreateSample = async () => {
+    try {
+      const response = await fetch('/src/data/sample-workflow.yaml');
+      const yamlContent = await response.text();
+      const sampleWorkflow = parseYamlWorkflow(yamlContent);
+      actions.setWorkflow(sampleWorkflow);
+    } catch (error) {
+      console.error('Failed to load sample workflow:', error);
+    }
   };
 
   const handleAddNode = () => {

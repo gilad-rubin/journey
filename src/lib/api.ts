@@ -1,5 +1,5 @@
 /**
- * API service for communicating with the Redwood backend
+ * API service for communicating with the Journey backend
  */
 
 import { Workflow, WorkflowBlock, WorkflowNode } from '@/types/workflow';

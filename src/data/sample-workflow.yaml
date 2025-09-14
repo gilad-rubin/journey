@@ -1,0 +1,93 @@
+id: what_is_the_status_of_my_loan
+name: What is the status of my loan
+description: Acme Financial loan flow
+variables: []
+nodes:
+- id: node-1750771731223
+  title: Request Loan Amount
+  blocks:
+  - type: PRESENT_CONTENT
+    payload: What is the loan amount?
+  - type: AWAIT_USER_INPUT
+    target: Loan Amount
+    prompt: ''
+- id: node-1750771767106
+  title: Loan Amount Routing
+  blocks:
+  - type: CONDITION
+    rules:
+    - variable: Loan Amount
+      operator: less_than
+      value: '50000'
+      then:
+      - type: GOTO_NODE
+        target: node-1750772019232
+      else: []
+  - type: CONDITION
+    rules:
+    - variable: Loan Amount
+      operator: greater_than_or_equal
+      value: '50000'
+      then:
+      - type: GOTO_NODE
+        target: node-1750772091778
+      else:
+      - type: GOTO_NODE
+        target: node-1750772103781
+    - variable: Loan Amount
+      operator: less_than
+      value: '100000'
+      then:
+      - type: GOTO_NODE
+        target: node-1750772091778
+      else: []
+- id: node-1750772019232
+  title: Process Small Loan (<$50k)
+  blocks:
+  - type: SET_VARIABLE
+    target: Has Active Loans?
+    source: tool:has_active_loans
+    action: has_active_loans
+    actionArgs:
+      user_id: '11111'
+  - type: CONDITION
+    rules:
+    - variable: Has Active Loans?
+      operator: is_true
+      value: ''
+      then:
+      - type: GOTO_NODE
+        target: node-1750776937527
+      else: []
+  - type: SET_VARIABLE
+    target: Loan Balance
+    source: tool:get_total_loan_balance
+    action: get_total_loan_balance
+    actionArgs:
+      user_id: '11111'
+  - type: CONDITION
+    rules:
+    - variable: Loan Balance
+      operator: greater_than
+      value: '10000'
+      then:
+      - type: GOTO_NODE
+        target: node-1750776937527
+      else:
+      - type: SET_VARIABLE
+        target: ''
+        source: 'tool:'
+        action: ''
+        actionArgs: {}
+- id: node-1750772091778
+  title: Process Medium Loan ($50k-$100k)
+  blocks: []
+- id: node-1750772103781
+  title: Process Large Loan (>$100k)
+  blocks: []
+- id: node-1750776937527
+  title: Loan Denial
+  blocks:
+  - type: PRESENT_CONTENT
+    payload: We're sorry, but you're not legible to get a loan.
+  - type: END_WORKFLOW

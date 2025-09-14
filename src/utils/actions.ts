@@ -1,57 +1,5 @@
 import { ActionDefinition } from "@/types/workflow";
 
-// Core Transformation specific actions
-export const CT_ACTIONS: ActionDefinition[] = [
-  {
-    id: "is_a_no",
-    name: "Is a 'No'?",
-    description: "Check if a response indicates 'no' or similar negative responses",
-    arguments: [
-      {
-        name: "response",
-        type: "string",
-        required: true,
-        description: "The response text to analyze"
-      }
-    ],
-    returnType: "boolean",
-    category: "condition",
-    examples: ["is_a_no('no')", "is_a_no('nope')", "is_a_no('')"]
-  },
-  {
-    id: "is_potential_core_state",
-    name: "Sounds like a Core State?",
-    description: "Check if a response indicates a potential core state like unity, wholeness, or oneness",
-    arguments: [
-      {
-        name: "response",
-        type: "string",
-        required: true,
-        description: "The response text to analyze"
-      }
-    ],
-    returnType: "boolean",
-    category: "transformation",
-    examples: ["is_potential_core_state('unity')", "is_potential_core_state('I want wholeness')"]
-  },
-  {
-    id: "last_item_in",
-    name: "Last Item in List",
-    description: "Get the last item from a list of strings",
-    arguments: [
-      {
-        name: "items_list",
-        type: "array",
-        required: true,
-        description: "List of items to get the last item from"
-      }
-    ],
-    returnType: "string",
-    category: "transformation",
-    examples: ["last_item_in(['safety', 'peace', 'wholeness'])"]
-  }
-];
-
 // Generic utility actions
 export const UTILITY_ACTIONS: ActionDefinition[] = [
   {
@@ -95,7 +43,7 @@ export const UTILITY_ACTIONS: ActionDefinition[] = [
 ];
 
 // All available actions
-export const ALL_ACTIONS = [...CT_ACTIONS, ...UTILITY_ACTIONS];
+export const ALL_ACTIONS = [...UTILITY_ACTIONS];
 
 export const getActionsList = () => {
   return ALL_ACTIONS.map(action => ({

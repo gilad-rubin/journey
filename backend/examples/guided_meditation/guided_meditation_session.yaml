@@ -1,0 +1,241 @@
+id: guided_meditation_session
+name: Guided Meditation Session
+description: A personalized guided meditation workflow that adapts to user needs and preferences
+variables: []
+nodes:
+- id: welcome
+  title: Welcome and Check-in
+  blocks:
+  - type: PRESENT_CONTENT
+    payload: "Welcome to your guided meditation session. Let's create a practice that's perfect for you today."
+  - type: PRESENT_CONTENT
+    payload: "How are you feeling right now? Please describe your current state of mind and body."
+  - type: AWAIT_USER_INPUT
+    target: Current State
+    prompt: ''
+
+- id: assess_needs
+  title: Assess User Needs
+  blocks:
+  - type: SET_VARIABLE
+    target: Stress Level
+    action: assess_stress_level
+    actionArgs:
+      responses: ["{Current State}"]
+  - type: PRESENT_CONTENT
+    payload: "Thank you for sharing. How much time do you have available for meditation today? (in minutes)"
+  - type: AWAIT_USER_INPUT
+    target: Available Time
+    prompt: ''
+  - type: PRESENT_CONTENT
+    payload: "What's your experience level with meditation?"
+  - type: PRESENT_CONTENT
+    payload: "1. Beginner (new to meditation)\n2. Intermediate (some experience)\n3. Advanced (regular practitioner)"
+  - type: AWAIT_USER_INPUT
+    target: Experience Level Input
+    prompt: ''
+
+- id: set_experience_level
+  title: Set Experience Level
+  blocks:
+  - type: CONDITION
+    rules:
+    - variable: Experience Level Input
+      operator: contains
+      value: '1'
+      then:
+      - type: SET_VARIABLE
+        target: Experience Level
+        source: beginner
+      else: []
+    - variable: Experience Level Input
+      operator: contains
+      value: 'beginner'
+      then:
+      - type: SET_VARIABLE
+        target: Experience Level
+        source: beginner
+      else: []
+  - type: CONDITION
+    rules:
+    - variable: Experience Level Input
+      operator: contains
+      value: '2'
+      then:
+      - type: SET_VARIABLE
+        target: Experience Level
+        source: intermediate
+      else: []
+    - variable: Experience Level Input
+      operator: contains
+      value: 'intermediate'
+      then:
+      - type: SET_VARIABLE
+        target: Experience Level
+        source: intermediate
+      else: []
+  - type: CONDITION
+    rules:
+    - variable: Experience Level Input
+      operator: contains
+      value: '3'
+      then:
+      - type: SET_VARIABLE
+        target: Experience Level
+        source: advanced
+      else: []
+    - variable: Experience Level Input
+      operator: contains
+      value: 'advanced'
+      then:
+      - type: SET_VARIABLE
+        target: Experience Level
+        source: advanced
+      else: []
+  - type: CONDITION
+    rules:
+    - variable: Experience Level
+      operator: equals
+      value: ''
+      then:
+      - type: SET_VARIABLE
+        target: Experience Level
+        source: beginner
+      else: []
+
+- id: personalize_session
+  title: Personalize Session
+  blocks:
+  - type: SET_VARIABLE
+    target: Suggested Duration
+    action: suggest_meditation_duration
+    actionArgs:
+      experience_level: "{Experience Level}"
+      available_time: "{Available Time}"
+  - type: PRESENT_CONTENT
+    payload: "Based on your experience and available time, I suggest a {Suggested Duration}-minute session."
+  - type: PRESENT_CONTENT
+    payload: "What would you like to focus on today? What intention would you like to set?"
+  - type: AWAIT_USER_INPUT
+    target: Intention
+    prompt: ''
+  - type: PRESENT_CONTENT
+    payload: "What's your name? (This helps me personalize your experience - you can skip if you prefer)"
+  - type: AWAIT_USER_INPUT
+    target: User Name
+    prompt: ''
+
+- id: choose_breathing_pattern
+  title: Choose Breathing Pattern
+  blocks:
+  - type: CONDITION
+    rules:
+    - variable: Stress Level
+      operator: equals
+      value: 'high'
+      then:
+      - type: SET_VARIABLE
+        target: Breathing Pattern
+        source: 4-7-8
+      - type: PRESENT_CONTENT
+        payload: "I notice you're feeling stressed. We'll use a calming 4-7-8 breathing pattern to help you relax."
+      else: []
+  - type: CONDITION
+    rules:
+    - variable: Stress Level
+      operator: equals
+      value: 'moderate'
+      then:
+      - type: SET_VARIABLE
+        target: Breathing Pattern
+        source: box
+      - type: PRESENT_CONTENT
+        payload: "We'll use a balanced box breathing pattern to help center your mind."
+      else: []
+  - type: CONDITION
+    rules:
+    - variable: Stress Level
+      operator: equals
+      value: 'low'
+      then:
+      - type: SET_VARIABLE
+        target: Breathing Pattern
+        source: simple
+      - type: PRESENT_CONTENT
+        payload: "Since you're already feeling calm, we'll use a simple, natural breathing pattern."
+      else: []
+
+- id: setup_session
+  title: Setup Session
+  blocks:
+  - type: SET_VARIABLE
+    target: Breathing Times
+    action: calculate_breathing_pattern
+    actionArgs:
+      pattern_type: "{Breathing Pattern}"
+  - type: SET_VARIABLE
+    target: Personal Affirmation
+    action: create_personalized_affirmation
+    actionArgs:
+      intention: "{Intention}"
+      name: "{User Name}"
+  - type: PRESENT_CONTENT
+    payload: "Perfect! Let's begin your meditation session. Find a comfortable position, either sitting or lying down."
+  - type: PRESENT_CONTENT
+    payload: "Close your eyes if that feels comfortable, or soften your gaze downward."
+
+- id: meditation_session
+  title: Meditation Session
+  blocks:
+  - type: PRESENT_CONTENT
+    payload: "Let's start with some conscious breathing. We'll use the {Breathing Pattern} pattern."
+  - type: PRESENT_CONTENT
+    payload: "Take a moment to notice your natural breath... feeling the air moving in and out of your body."
+  - type: SET_VARIABLE
+    target: Mindfulness Prompt
+    action: generate_mindfulness_prompt
+    actionArgs:
+      focus_area: "breath"
+  - type: PRESENT_CONTENT
+    payload: "{Mindfulness Prompt}"
+  - type: PRESENT_CONTENT
+    payload: "Continue breathing mindfully for the next few minutes..."
+  - type: AWAIT_USER_INPUT
+    target: Breathing Complete
+    prompt: "Press Enter when you're ready to continue..."
+
+- id: intention_focus
+  title: Intention Focus
+  blocks:
+  - type: PRESENT_CONTENT
+    payload: "Now, gently bring your intention to mind: {Intention}"
+  - type: PRESENT_CONTENT
+    payload: "{Personal Affirmation}"
+  - type: SET_VARIABLE
+    target: Body Awareness Prompt
+    action: generate_mindfulness_prompt
+    actionArgs:
+      focus_area: "body"
+  - type: PRESENT_CONTENT
+    payload: "{Body Awareness Prompt}"
+  - type: AWAIT_USER_INPUT
+    target: Intention Focus Complete
+    prompt: "Press Enter when you feel ready to continue..."
+
+- id: closing
+  title: Closing
+  blocks:
+  - type: SET_VARIABLE
+    target: Gratitude Prompt
+    action: generate_mindfulness_prompt
+    actionArgs:
+      focus_area: "gratitude"
+  - type: PRESENT_CONTENT
+    payload: "As we come to the end of our session, {Gratitude Prompt}"
+  - type: PRESENT_CONTENT
+    payload: "Take a moment to appreciate yourself for taking this time for your wellbeing."
+  - type: PRESENT_CONTENT
+    payload: "When you're ready, gently wiggle your fingers and toes, and slowly open your eyes."
+  - type: PRESENT_CONTENT
+    payload: "Your {Suggested Duration}-minute meditation session is complete. {Personal Affirmation}"
+  - type: END_WORKFLOW
