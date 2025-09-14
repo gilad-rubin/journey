@@ -44,7 +44,7 @@ const Index = () => {
         />
       </div>
       <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-[40%] min-w-[600px]">
+        <div className="w-full max-w-[60%] min-w-[600px]">
           <WorkflowEditor workflowHook={workflowHook} />
         </div>
       </div>

@@ -201,8 +201,8 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({ workflowHook }) 
   return (
     <div className="min-h-screen bg-white p-6">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-        <div className="mb-4 lg:mb-0">
+      <div className="flex flex-col mb-8">
+        <div className="mb-4">
           <div className="text-3xl font-bold text-foreground flex items-center gap-3 group">
             <div className="p-2 bg-primary rounded-lg text-primary-foreground">
               <Workflow className="w-6 h-6" />

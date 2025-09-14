@@ -109,6 +109,11 @@ export const WorkflowExecutor: React.FC<WorkflowExecutorProps> = ({
     scrollToBottom();
   }, [waitingForInput, scrollToBottom]);
 
+  // Auto-start execution on mount
+  useEffect(() => {
+    startExecution();
+  }, []);
+
   // Trigger execution when isRunning changes to true
   useEffect(() => {
     if (isRunning && !waitingForInput) {
@@ -313,24 +318,6 @@ export const WorkflowExecutor: React.FC<WorkflowExecutorProps> = ({
       {/* Control Panel */}
       <div className="flex items-center gap-2 p-4 border-b bg-muted/50">
         <Button
-          onClick={startExecution}
-          disabled={isRunning}
-          variant={isRunning ? "secondary" : "default"}
-          size="sm"
-        >
-          <Play className="h-4 w-4 mr-2" />
-          Start
-        </Button>
-        <Button
-          onClick={pauseExecution}
-          disabled={!isRunning || waitingForInput}
-          variant="outline"
-          size="sm"
-        >
-          <Pause className="h-4 w-4 mr-2" />
-          Pause
-        </Button>
-        <Button
           onClick={stopExecution}
           disabled={!isRunning && !waitingForInput}
           variant="outline"
@@ -378,7 +365,7 @@ export const WorkflowExecutor: React.FC<WorkflowExecutorProps> = ({
               <div className="p-4 space-y-2">
                 {executionLog.length === 0 ? (
                   <p className="text-sm text-muted-foreground italic">
-                    No execution logs yet. Click "Start" to begin workflow execution.
+                    Execution is starting...
                   </p>
                 ) : (
                   executionLog.map((entry, index) => (
