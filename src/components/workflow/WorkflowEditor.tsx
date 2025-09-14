@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { UseWorkflowReturn } from "@/hooks/useWorkflow";
 import { cn } from "@/lib/utils";
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { WorkflowExecutor } from "./WorkflowExecutor";
+import { WorkflowGraph } from "./WorkflowGraph";
 import { WorkflowNode } from "./WorkflowNode";
 
 interface WorkflowEditorProps {
@@ -329,43 +331,52 @@ export const WorkflowEditor: React.FC<WorkflowEditorProps> = ({ workflowHook }) 
           )}>
             <Card>
               <CardHeader>
-                <CardTitle>Nodes</CardTitle>
+                <CardTitle>Workflow</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {state.workflow.nodes.map((node, index) => (
-                    <React.Fragment key={node.id}>
-                      <WorkflowNode
-                        node={node}
-                        onChange={(updatedNode) => actions.updateNode(node.id, updatedNode)}
-                        onDelete={() => actions.deleteNode(node.id)}
-                        isSelected={state.selectedNodeId === node.id}
-                        onSelect={() => actions.selectNode(node.id)}
-                        onAddBlock={(blockType) => {
-                          // This will be handled by the node component
-                        }}
-                        onSelectBlock={(blockIndex) => {
-                          actions.selectNode(node.id);
-                          actions.selectBlock(node.id, blockIndex);
-                        }}
-                        isEditing={true}
-                        selectedBlockIndex={state.selectedNodeId === node.id ? state.selectedBlockIndex : null}
-                        availableNodes={state.workflow.nodes}
-                        workflowNodes={state.workflow.nodes}
-                      />
-                    </React.Fragment>
-                  ))}
-                  <div className="flex justify-center">
-                    <Button
-                      variant="outline"
-                      onClick={handleAddNode}
-                      className="mt-4 gap-2"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Add Node
-                    </Button>
-                  </div>
-                </div>
+                <Tabs defaultValue="graph" className="w-full">
+                  <TabsList>
+                    <TabsTrigger value="graph">Graph</TabsTrigger>
+                    <TabsTrigger value="nodes">Nodes</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="graph">
+                    <WorkflowGraph workflow={state.workflow} />
+                  </TabsContent>
+                  <TabsContent value="nodes">
+                    <div className="space-y-4">
+                      {state.workflow.nodes.map((node) => (
+                        <React.Fragment key={node.id}>
+                          <WorkflowNode
+                            node={node}
+                            onChange={(updatedNode) => actions.updateNode(node.id, updatedNode)}
+                            onDelete={() => actions.deleteNode(node.id)}
+                            isSelected={state.selectedNodeId === node.id}
+                            onSelect={() => actions.selectNode(node.id)}
+                            onAddBlock={() => {}}
+                            onSelectBlock={(blockIndex) => {
+                              actions.selectNode(node.id);
+                              actions.selectBlock(node.id, blockIndex);
+                            }}
+                            isEditing={true}
+                            selectedBlockIndex={state.selectedNodeId === node.id ? state.selectedBlockIndex : null}
+                            availableNodes={state.workflow.nodes}
+                            workflowNodes={state.workflow.nodes}
+                          />
+                        </React.Fragment>
+                      ))}
+                      <div className="flex justify-center">
+                        <Button
+                          variant="outline"
+                          onClick={handleAddNode}
+                          className="mt-4 gap-2"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Add Node
+                        </Button>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           </div>
